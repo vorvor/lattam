@@ -317,6 +317,7 @@ class openlayers_proximity_handler_filter extends views_handler_filter_numeric {
   function process_node_proximity() {
     //$nid = $this->value['node'];
     $nid = motor_read_gamelog(arg(2));
+    dpm($nid);
     
     // Get square boundaries.
     $x1 = db_query("SELECT lon FROM {openlayers_proximity} WHERE nid = :nid ORDER BY lon ASC LIMIT 0, 1", array(':nid' => $nid))->fetchField();

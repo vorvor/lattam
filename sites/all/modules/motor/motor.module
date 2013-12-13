@@ -42,7 +42,7 @@ function motor_choose_game() {
   return theme('table',array( 'header' => $header, 'rows'=> $rows));
 }
 
-function motor_proximity_class($p) {
+function motor_proximity_class($p, $gid) {
   $limit = motor_read_gamelimit($gid);
   $win = $limit;
   $near = $limit * 2.6;
@@ -67,7 +67,7 @@ function motor_validate_tip($nid, $gid) {
   $parts = strip_tags($proximity);
   $proximity = preg_replace("/[^0-9.]/", "", $parts);
   $output = '<div id="proximity">' . $proximity . ' Km</div>';
-  $output.= '<div id="proximity_class">' . motor_proximity_class($proximity) . '</div>';
+  $output.= '<div id="proximity_class">' . motor_proximity_class($proximity, $gid) . '</div>';
   if ($proximity < 0.5) {
     $output.= 'NEXT GAME' . motor_get_next_game($gid, motor_read_gamelog($gid));
     $nextgame = motor_get_next_game($gid, motor_read_gamelog($gid));

@@ -1,0 +1,299 @@
+<?php
+
+
+
+function motor_menu() {
+  $items['games'] = array(
+    'title' => 'Choose game',
+    'page callback' => 'motor_choose_game',
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  
+  $items['validate'] = array(
+    'title' => 'Validate tip',
+    'page callback' => 'motor_validate_tip',
+    'page argument' => array(2,3),
+    'access arguments' => array('access content'),
+  );
+  
+  $items['add_tip'] = array(
+    'title' => 'Add tip',
+    'page callback' => 'motor_add_tip',
+    'page argument' => array(2),
+    'access arguments' => array('access content'),
+  );
+
+  return $items;
+}
+
+function motor_choose_game() {
+  $header = array();
+  $queues = nodequeue_load_queues(nodequeue_get_all_qids(25));
+  //dpm($queues);
+  foreach ($queues as $queue) {
+    $rows[] = array($queue->title,
+                    views_embed_view('pics_of_games', 'block', $queue->qid),
+                    l('Choose game' ,'add_tip/' . $queue->qid),
+                    l('Edit queue' ,'admin/structure/nodequeue/'.$queue->qid.'/view/'.$queue->qid));
+    
+  }
+  
+  return theme('table',array( 'header' => $header, 'rows'=> $rows));
+}
+
+function motor_proximity_class($p) {
+  $limit = motor_read_gamelimit($gid);
+  $win = $limit;
+  $near = $limit * 2.6;
+  $middle = $limit * 3.3;
+  if ($p <= $win) {
+    $class = 'Találat';
+  }
+  if ($p > $win || $p <= $near) {
+    $class = 'Meleg';
+  }
+  if ($p > $near || $p <= $middle) {
+    $class = 'Langyos';
+  }
+  if ($p > 1) {
+    $class = 'Hideg';
+  }
+  return $class;
+}
+
+function motor_validate_tip($nid, $gid) {
+  $proximity = views_embed_view('get_distance','block_1',$nid);
+  $parts = strip_tags($proximity);
+  $proximity = preg_replace("/[^0-9.]/", "", $parts);
+  $output = '<div id="proximity">' . $proximity . ' Km</div>';
+  $output.= '<div id="proximity_class">' . motor_proximity_class($proximity) . '</div>';
+  if ($proximity < 0.5) {
+    $output.= 'NEXT GAME' . motor_get_next_game($gid, motor_read_gamelog($gid));
+    $nextgame = motor_get_next_game($gid, motor_read_gamelog($gid));
+    dpm('THIS' . motor_read_gamelog($gid));
+    dpm('NEXT' . $nextgame);
+    motor_write_gamelog($gid, $nextgame);
+  }
+  
+  $output.= l('Újra próbálkozom', 'add_tip/' . $gid);
+  $output.= '<p>Másik játékot választok</p>';
+  $output.= motor_choose_game();
+  return $output;
+}
+
+function motor_write_gamelog($gid, $pid) {
+  global $user;
+  
+  $ppid = motor_read_gamelog($gid);
+
+  if (empty($ppid)) {
+    dpm('WRITE' . $gid . ':' . $pid);
+    $nid = db_insert('game_log')
+    ->fields(array(
+    'uid' => $user->uid,
+    'gid' => $gid,
+    'pid' => $pid,
+    ))
+  ->execute();
+  } else {
+    dpm('UPDATE'.$pid);
+    $nid = db_update('game_log')
+    ->fields(array(
+    'pid' => $pid,
+    ))
+    ->condition('uid', $user->uid)
+    ->condition('gid', $gid)
+    ->execute();
+  }
+}
+
+function motor_read_gamelog($gid) {
+  global $user;
+  $result = db_query('SELECT uid,gid,pid FROM {game_log}  WHERE gid=:gid AND uid=:uid', array(':gid'=>$gid, ':uid'=>$user->uid))->fetchObject();
+  if (isset($result->pid)) {
+    return $result->pid;
+  }
+  return '';
+}
+
+function motor_get_next_game($gid, $pid) {
+  $nodes = views_embed_view('get_queue_placenids','block_1',$gid);
+    $nodes = strip_tags($nodes);
+    $nodes = preg_replace("/[^0-9,.]/", "", $nodes);
+    $nodes = substr($nodes,0,strlen($nodes)-1);
+    $nodes = explode(',', $nodes);
+  dpm($nodes);
+  reset($nodes);
+  $c = 0;
+  foreach ($nodes as $value) {
+    if ($c == 1) {
+      $npid = $value;
+      break;
+    }
+    if ($pid == $value) {
+      $c++;
+    }
+  }
+  
+  return $npid;
+}
+
+function motor_read_gamelimit($gid) {
+  global $user;
+  $result = db_query('SELECT gid,plimit FROM {game_proxlimit} WHERE gid=:gid', array(':gid'=>$gid))->fetchObject();
+  if (isset($result->plimit)) {
+    return $result->plimit;
+  }
+  return '';
+}
+
+function motor_write_gamelimit($gid, $limit) {
+  global $user;
+  
+  $plimit = motor_read_gamelimit($gid);
+
+  if (empty($plimit)) {
+    dpm('WRITE');
+    $nid = db_insert('game_proxlimit')
+    ->fields(array(
+    'gid' => $gid,
+    'plimit' => $limit,
+    ))
+  ->execute();
+  } else {
+    dpm('UPDATE'.$gid);
+    $nid = db_update('game_proxlimit')
+    ->fields(array(
+    'plimit' => $limit,
+    ))
+    ->condition('gid', $gid)
+    ->execute();
+  }
+}
+
+function motor_form_alter(&$form, &$form_state, $form_id) {
+  
+  
+
+  $parts = explode('_',$form_id);
+  array_pop($parts);
+  $new_form_id = implode('_',$parts);
+
+  if ($new_form_id == 'nodequeue_arrange_subqueue_form') {
+    $def_limit = motor_read_gamelimit(arg(5));
+    if (empty($def_limit)) {
+      $def_limit = 0.1;
+    }
+    $form['limit'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Limit for this game'),
+      '#default_value' => $def_limit,
+    );
+    $form['#submit'][] = 'motor_save_game_limit';
+    $form['actions']['submit']['#submit'][] = 'motor_save_game_limit';
+  }
+  
+  if ($form_id == 'tip_node_form') {
+    $nodes = nodequeue_nids_visible(arg(1));
+    $nodes_order = array_keys($nodes);
+    $form['field_tip_on_place']['und']['#default_value'] = motor_read_gamelog(arg(1));
+    hide($form['field_tip_on_place']);
+  }
+}
+
+function motor_save_game_limit($form, &$form_state) {
+  dpm('limit_wrote'.$form_state['values']['limit'].'for game'.arg(5));
+  motor_write_gamelimit((int)arg(5), $form_state['values']['limit']);
+  
+}
+
+function motor_add_tip($gid) {
+  if (!function_exists('node_add')) { module_load_include('inc', 'node', 'node.pages'); }
+  
+  $pid = motor_read_gamelog(arg(1));
+  
+  if (empty($pid)) {
+    
+    $nodes = nodequeue_nids_visible(arg(1));
+    $nodes = views_embed_view('get_queue_placenids','block_1',arg(1));
+    $nodes = strip_tags($nodes);
+    $nodes = preg_replace("/[^0-9,.]/", "", $nodes);
+    $nodes = substr($nodes,0,strlen($nodes)-1);
+    $nodes = explode(',', $nodes);
+    
+    //$nodes_order = array_keys($nodes);
+    $pid = $nodes[0];
+    motor_write_gamelog(arg(1), $pid);
+  }
+  
+  
+  $form = node_add('tip');
+  $limit = motor_read_gamelimit($gid);
+  return drupal_render($form);
+}
+
+function motor_node_presave($node) {
+  if ($node->type == 'place') {
+    $nodel = node_load($node->nid);
+  
+   
+    if (isset($node->field_longitude['und'][0])) {
+      
+      
+      
+    
+      $node->field_place['und'][0]['geo_type'] = 'point';
+      $node->field_place['und'][0]['geom'] = 'POINT (' . $node->field_longitude['und'][0]['value'] . ' ' . $node->field_latitude['und'][0]['value'] . ')';
+      
+      $node->field_place['und'][0]['lat'] = $node->field_latitude['und'][0]['value'];
+      $node->field_place['und'][0]['top'] = $node->field_latitude['und'][0]['value'];
+      $node->field_place['und'][0]['bottom'] = $node->field_latitude['und'][0]['value'];
+      
+      $node->field_place['und'][0]['lon'] = $node->field_longitude['und'][0]['value'];
+      $node->field_place['und'][0]['left'] = $node->field_longitude['und'][0]['value'];
+      $node->field_place['und'][0]['right'] = $node->field_longitude['und'][0]['value'];
+    }
+    
+    
+  }
+}
+
+
+
+
+
+
+
+function motor_block_info() {
+  $blocks['game_info_block'] = array(
+    'info' => t('Game info block'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  return $blocks;
+}
+
+
+function motor_block_view($delta = '') {
+  $block = array();
+  $content = '';
+  $content.= views_embed_view('show_place_in_block_','block');
+  $content.= motor_read_gamelimit(5);
+  switch ($delta) {
+    case 'game_info_block':
+      $block['subject'] = '';
+      $block['content'] = $content;
+      break;
+  }
+  return $block;
+}
+
+
+
+
+
+
+
+
+
+

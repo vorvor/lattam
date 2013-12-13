@@ -1,0 +1,130 @@
+/**
+ * @file
+ * Styles are organized using the SMACSS technique. @see http://smacss.com/book/
+ *
+ * When you turn on CSS aggregation at admin/config/development/performance, all
+ * of these @include files will be combined into a single file.
+ */
+
+/* Import Sass mixins, variables, Compass modules, etc. */
+@import "init";
+
+/* HTML element (SMACSS base) rules */
+@import "normalize";
+
+/* Layout rules */
+@import "layouts/responsive";
+
+/* Component (SMACSS module) rules */
+@import "components/misc";
+// Optionally, add your own components here.
+@import "print";
+
+/* SMACSS theme rules */
+/* @import "theme-A"; */
+/* @import "theme-B"; */
+
+
+@font-face {
+    font-family: "gear";
+    src: url('http://www.webulo.hu/sites/default/themes/webulo/fonts/gearedslab-regular.eot');
+    src: url('http://www.webulo.hu/sites/default/themes/webulo/fonts/gearedslab-regular.eot?#iefix') format('embedded-opentype'),
+         url('fonts/gearedslab-regular.woff') format('woff'),
+         url('http://www.webulo.hu/sites/default/themes/webulo/fonts/gearedslab-regular.ttf') format('truetype'),
+         url('http://www.webulo.hu/sites/default/themes/webulo/fonts/gearedslab-regular.svg#font') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: "miriad";
+    src:  url('http://www.webulo.hu/sites/default/themes/webulo/fonts/gnu.eot');
+    src:  url('http://www.webulo.hu/sites/default/themes/webulo/fonts/gnu.eot?#iefix') format('embedded-opentype'),
+          url('fonts/myriadprosemiboldcond.woff') format('woff'),
+          url('http://www.webulo.hu/sites/default/themes/webulo/fonts/myriadprosemiboldcond.ttf') format('truetype'),
+          url('http://www.webulo.hu/sites/default/themes/webulo/fonts/myriadprosemiboldcond.svg#font') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+
+
+h1, h2, h3, h4, h5,
+.item-list ul li,
+.book-navigation ul li,
+.book-navigation .page-links,
+#block-system-main-menu,
+.editor-quest,
+.editor-descr
+{
+  font-family: miriad;
+  font-weight:normal;
+}
+
+.item-list ul li a,
+.book-navigation ul li a,
+.book-navigation .page-links a,
+#block-system-main-menu a {
+  text-decoration: none;
+  font-size:1.2em;
+  color:#333;
+}
+
+.item-list ul li a:hover,
+.book-navigation ul li a:hover,
+.book-navigation .page-links a:hover {
+  color: #abc837;
+}
+
+
+.page-add-tip {
+
+  #page {
+    width:100%;
+    max-width:100%;
+
+      #content {
+        padding:0;
+
+        .form-item {
+          margin:0;
+        }
+      }
+  
+    .geofield-openlayers-map {
+      height:400px;
+    }
+    
+    #openlayers-map {
+      width:100% !important;
+      height:800px;
+    }
+    #openlayers-container-openlayers-map {
+    //#openlayers-map {
+      width:100% !important;
+      height:100% !important;
+    }
+    
+            .form-actions {
+            z-index: 1000000000;
+            position: absolute;
+        }
+  }
+  
+  #page_bottom {
+    z-index: 10000;
+    position: absolute;
+    top: 0;
+
+    }
+
+}
+
+#block-views-show-place-in-block-block {
+    position: absolute;
+    top: 20%;
+    left: 65%;
+}
+

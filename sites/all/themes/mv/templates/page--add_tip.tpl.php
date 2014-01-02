@@ -73,6 +73,36 @@
 
 
 
-<?php print $messages; ?>
+      <?php
+        global $user;
+        $plusclass = '';
+      
+        if ($user->uid == 1) {
+          print $messages;
+        }
+      ?>
+<script>
+//jQuery("#page").addClass("tust");
+
+jQuery(document).ready(function() {
+  function readCookie(name) {
+    name += '=';
+    for (var ca = document.cookie.split(/;\s*/), i = ca.length - 1; i >= 0; i--)
+        if (!ca[i].indexOf(name))
+            return ca[i].replace(name, '');
+}
+
+  jQuery('.olControlDrawFeaturePointItemInactive').trigger('click');
+  
+  latlon = decodeURIComponent(readCookie('lattam')).split(';');
+  console.log(latlon);
+  
+  var ol = jQuery('.openlayers-map').data('openlayers');//assuming there is just one map on the page
+  var lonLat = new OpenLayers.LonLat(latlon[1], latlon[0]).transform(new OpenLayers.Projection("EPSG:4326"), ol.openlayers.getProjectionObject());
+  ol.openlayers.setCenter(lonLat, 11);
+    
+})
+
+</script>
 
 </div>

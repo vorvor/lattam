@@ -2,6 +2,7 @@
  * @file
  * DrawFeatures Behavior
  */
+
 Drupal.openlayers.addBehavior('openlayers_behavior_drawfeatures', function (data, options) {
   // Update function to write to element.
   function openlayers_behavior_drawfeatures_update(features) {
@@ -120,6 +121,8 @@ Drupal.openlayers.addBehavior('openlayers_behavior_drawfeatures', function (data
   }
 
   // Add modify feature tool
+  
+  
   control.addControls(new OpenLayers.Control.ModifyFeature(
     dataLayer, {
       displayClass: 'olControlModifyFeature',

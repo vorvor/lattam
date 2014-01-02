@@ -1808,7 +1808,15 @@ tr.selected td {
   font-style: normal;
 }
 
-/* line 61, ../sass/styles.scss */
+@font-face {
+  font-family: "lattam";
+  src: url("../fonts/lattam.eot");
+  src: url("../fonts/lattam.eot?#iefix") format("embedded-opentype"), url("../fonts/lattam.woff") format("woff"), url("../fonts/lattam.ttf") format("truetype"), url("../fonts/lattam.svg#font") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* line 71, ../sass/styles.scss */
 h1, h2, h3, h4, h5,
 .item-list ul li,
 .book-navigation ul li,
@@ -1820,7 +1828,7 @@ h1, h2, h3, h4, h5,
   font-weight: normal;
 }
 
-/* line 69, ../sass/styles.scss */
+/* line 79, ../sass/styles.scss */
 .item-list ul li a,
 .book-navigation ul li a,
 .book-navigation .page-links a,
@@ -1830,55 +1838,192 @@ h1, h2, h3, h4, h5,
   color: #333;
 }
 
-/* line 77, ../sass/styles.scss */
+/* line 87, ../sass/styles.scss */
 .item-list ul li a:hover,
 .book-navigation ul li a:hover,
 .book-navigation .page-links a:hover {
   color: #abc837;
 }
 
-/* line 84, ../sass/styles.scss */
+/* line 91, ../sass/styles.scss */
+#logo, #name-and-slogan {
+  padding: 10px;
+}
+
+/* line 97, ../sass/styles.scss */
 .page-add-tip #page {
   width: 100%;
   max-width: 100%;
+  padding: 0;
 }
-/* line 88, ../sass/styles.scss */
+/* line 101, ../sass/styles.scss */
 .page-add-tip #page #content {
   padding: 0;
 }
-/* line 91, ../sass/styles.scss */
+/* line 104, ../sass/styles.scss */
 .page-add-tip #page #content .form-item {
   margin: 0;
 }
-/* line 96, ../sass/styles.scss */
+/* line 109, ../sass/styles.scss */
 .page-add-tip #page .geofield-openlayers-map {
   height: 400px;
 }
-/* line 100, ../sass/styles.scss */
+/* line 113, ../sass/styles.scss */
 .page-add-tip #page #openlayers-map {
   width: 100% !important;
   height: 800px;
 }
-/* line 104, ../sass/styles.scss */
+/* line 117, ../sass/styles.scss */
 .page-add-tip #page #openlayers-container-openlayers-map {
   width: 100% !important;
   height: 100% !important;
 }
-/* line 110, ../sass/styles.scss */
+/* line 123, ../sass/styles.scss */
 .page-add-tip #page .form-actions {
   z-index: 1000000000;
   position: absolute;
 }
-/* line 116, ../sass/styles.scss */
+/* line 129, ../sass/styles.scss */
 .page-add-tip #page_bottom {
   z-index: 10000;
   position: absolute;
   top: 0;
 }
+/* line 136, ../sass/styles.scss */
+.page-add-tip #edit-submit {
+  background: orange;
+  color: #000;
+  border: 2px solid #aa4400;
+}
 
-/* line 125, ../sass/styles.scss */
+/* line 144, ../sass/styles.scss */
 #block-views-show-place-in-block-block {
   position: absolute;
   top: 20%;
   left: 65%;
+}
+
+/* line 150, ../sass/styles.scss */
+#site-name a {
+  text-indent: -9999px;
+  background: url(../images/slogan.png) 10px 50% no-repeat;
+  display: block;
+  width: 500px;
+  height: 64px;
+}
+
+/* line 158, ../sass/styles.scss */
+#proximity {
+  font-family: miriad;
+  font-size: 3em;
+}
+
+/* line 163, ../sass/styles.scss */
+.choose-another {
+  font-family: miriad;
+  font-size: 2em;
+  clear: both;
+}
+/* line 167, ../sass/styles.scss */
+.choose-another p {
+  margin: 1em 0 0.5em 0;
+}
+
+/* line 172, ../sass/styles.scss */
+.choose-game-row {
+  clear: both;
+  overflow: hidden;
+  margin-bottom: 5%;
+}
+/* line 176, ../sass/styles.scss */
+.choose-game-row .game-title {
+  font-family: miriad;
+  font-size: 0.8em;
+  line-height: 1em;
+}
+/* line 181, ../sass/styles.scss */
+.choose-game-row .game-pics, .choose-game-row .game-choose {
+  float: left;
+}
+/* line 185, ../sass/styles.scss */
+.choose-game-row .game-pics .views-row {
+  margin: 5px;
+}
+/* line 189, ../sass/styles.scss */
+.choose-game-row .game-choose {
+  background: url(../images/choose-game.png) 0 0 no-repeat;
+  height: 40px;
+  margin: 23px 0 0 5px;
+}
+/* line 193, ../sass/styles.scss */
+.choose-game-row .game-choose a {
+  font-family: miriad;
+  text-decoration: none;
+  color: #000;
+  display: block;
+  height: 40px;
+  text-indent: 40px;
+  font-size: 0.8em;
+  margin-top: 9px;
+}
+
+/* line 207, ../sass/styles.scss */
+#block-user-login,
+#choose-game-block {
+  float: left;
+}
+
+/* line 211, ../sass/styles.scss */
+#block-user-login {
+  margin-left: 16%;
+}
+
+/* line 217, ../sass/styles.scss */
+.olLayerGoogleV3.olLayerGooglePoweredBy {
+  display: none;
+}
+
+/* line 221, ../sass/styles.scss */
+.try-again {
+  font-family: miriad;
+  font-size: 2em;
+  text-decoration: none;
+  color: orange;
+}
+
+/* line 228, ../sass/styles.scss */
+#block-views-ad-block {
+  float: left;
+  margin: 0 0 0 3em;
+}
+
+/* line 233, ../sass/styles.scss */
+#proxy-block {
+  float: left;
+}
+
+/* line 237, ../sass/styles.scss */
+.section-validate {
+  background: #d7eef4;
+}
+
+/* line 241, ../sass/styles.scss */
+.validate-photo {
+  float: left;
+  margin-right: 10px;
+}
+
+/* line 246, ../sass/styles.scss */
+.win {
+  background: #aade87;
+}
+
+/* line 250, ../sass/styles.scss */
+.hot {
+  background: #ff5599;
+}
+
+/* line 254, ../sass/styles.scss */
+.middle {
+  background: #ff9955;
 }

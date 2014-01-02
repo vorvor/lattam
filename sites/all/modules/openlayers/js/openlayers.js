@@ -16,9 +16,13 @@
  * http://drupal.org/node/613002
  */
 
+
+
 document.namespaces;
 
 (function($) {
+  
+
 
 Drupal.settings.openlayers = {};
 Drupal.settings.openlayers.maps = {};
@@ -453,4 +457,7 @@ Drupal.openlayers = {
 };
 
 Drupal.openlayers.layer = {};
+
 })(jQuery);
+
+

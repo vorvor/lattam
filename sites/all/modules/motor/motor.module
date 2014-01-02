@@ -4,14 +4,14 @@
 
 function motor_menu() {
   $items['games'] = array(
-    'title' => 'Choose game',
+    'title' => t('Choose game!'),
     'page callback' => 'motor_choose_game',
     'access arguments' => array('access content'),
     'type' => MENU_NORMAL_ITEM,
   );
   
   $items['validate'] = array(
-    'title' => 'Validate tip',
+    'title' => '',
     'page callback' => 'motor_validate_tip',
     'page argument' => array(2,3),
     'access arguments' => array('access content'),
@@ -28,18 +28,31 @@ function motor_menu() {
 }
 
 function motor_choose_game() {
+  global $user;
   $header = array();
   $queues = nodequeue_load_queues(nodequeue_get_all_qids(25));
   //dpm($queues);
+  $rows = '<div id="choose-game-block">';
   foreach ($queues as $queue) {
-    $rows[] = array($queue->title,
+    /* $rows[] = array($queue->title,
                     views_embed_view('pics_of_games', 'block', $queue->qid),
                     l('Choose game' ,'add_tip/' . $queue->qid),
                     l('Edit queue' ,'admin/structure/nodequeue/'.$queue->qid.'/view/'.$queue->qid));
-    
+    */
+    $row = '<div class="choose-game-row">';
+    $row.= '<div class="game-title">' . $queue->title . '</div>';
+    $row.= '<div class="game-pics">' . views_embed_view('pics_of_games', 'block', $queue->qid) . '</div>';
+    $row.= '<div class="game-choose">' . l(t('Choose game') ,'add_tip/' . $queue->qid) . '</div>';
+    if ($user->uid == 1) {
+      $row.= '<div class="game-edit">' . l('Edit queue' ,'admin/structure/nodequeue/'.$queue->qid.'/view/'.$queue->qid) . '</div>';
+    }
+    $row.= '</div>';
+    $rows.= $row;   
   }
-  
-  return theme('table',array( 'header' => $header, 'rows'=> $rows));
+  $rows.= '</div>';
+  //$rows.= '<div id="all-games">' . l(t('All games'), 'allgames') . '</div>';
+  //return '<div id="choose-game-table">' . theme('table',array( 'header' => $header, 'rows'=> $rows)) . '</div>';
+  return $rows;
 }
 
 function motor_proximity_class($p, $gid) {
@@ -47,38 +60,72 @@ function motor_proximity_class($p, $gid) {
   $win = $limit;
   $near = $limit * 2.6;
   $middle = $limit * 3.3;
+  dpm('P:'.$p);
   if ($p <= $win) {
-    $class = 'Találat';
+    $class = 'win';
   }
-  if ($p > $win || $p <= $near) {
-    $class = 'Meleg';
+  if ($p > $win && $p <= $near) {
+    $class = 'hot';
   }
-  if ($p > $near || $p <= $middle) {
-    $class = 'Langyos';
+  if ($p > $near && $p <= $middle) {
+    $class = 'middle';
   }
   if ($p > 1) {
-    $class = 'Hideg';
+    $class = 'cool';
   }
   return $class;
 }
 
+function motor_get_latlon($nid) {
+  //$coords = array();
+  $node = node_load($nid);
+  $lat = $node->field_place['und'][0]['lat'];
+  $lon = $node->field_place['und'][0]['lon'];
+  $coords['lat'] = $lat;
+  $coords['lon'] = $lon;
+  return $coords;
+}
+
 function motor_validate_tip($nid, $gid) {
   $proximity = views_embed_view('get_distance','block_1',$nid);
+  dpm('TIP' . $nid);
   $parts = strip_tags($proximity);
   $proximity = preg_replace("/[^0-9.]/", "", $parts);
-  $output = '<div id="proximity">' . $proximity . ' Km</div>';
-  $output.= '<div id="proximity_class">' . motor_proximity_class($proximity, $gid) . '</div>';
-  if ($proximity < 0.5) {
-    $output.= 'NEXT GAME' . motor_get_next_game($gid, motor_read_gamelog($gid));
+  
+  if ($proximity > 1) {
+    $prox = (int)$proximity . 'Km';
+  } else {
+    $prox = (int)($proximity*1000) . 'm';
+  }
+  
+  $ppid = motor_read_gamelog(arg(2));
+  
+  $output = '<div id="proxy-block"><div class="validate-photo">' . views_embed_view('show_place_in_block_', 'block', $ppid) . '</div><div id="proximity">' . $prox . '</div>';
+  //$output.= '<div id="proximity_class">' . motor_proximity_class($proximity, $gid) . '</div>';
+  $output.= '<div id="proximity_class">-el mellé lőttél!</div>';
+  
+  $limit = motor_read_gamelimit($gid);
+  
+  $latlon = motor_get_latlon($nid);
+  $value = $latlon['lat'] . ';' . $latlon['lon'];
+  setcookie("lattam", $value, time()+3600000, '/');
+
+  $retitle = t('Try again');
+  if ($proximity < $limit) {
+    //$output.= 'NEXT GAME' . motor_get_next_game($gid, motor_read_gamelog($gid));
     $nextgame = motor_get_next_game($gid, motor_read_gamelog($gid));
     dpm('THIS' . motor_read_gamelog($gid));
     dpm('NEXT' . $nextgame);
+    dpm($limit);
     motor_write_gamelog($gid, $nextgame);
+    $retitle = t('Next turn');
   }
   
-  $output.= l('Újra próbálkozom', 'add_tip/' . $gid);
-  $output.= '<p>Másik játékot választok</p>';
-  $output.= motor_choose_game();
+  $output.= l($retitle, 'add_tip/' . $gid, array('attributes' => array('class' => array('try-again'))));
+  
+  $output.= '<div class="choose-another"><p>' . t('Choose another game') . '</p>';
+  $output.= motor_choose_game() . '</div>';
+  $output.= '</div><!-- proxy block -->';
   return $output;
 }
 
@@ -174,7 +221,7 @@ function motor_write_gamelimit($gid, $limit) {
 
 function motor_form_alter(&$form, &$form_state, $form_id) {
   
-  
+  //dpm($form);
 
   $parts = explode('_',$form_id);
   array_pop($parts);
@@ -199,6 +246,7 @@ function motor_form_alter(&$form, &$form_state, $form_id) {
     $nodes_order = array_keys($nodes);
     $form['field_tip_on_place']['und']['#default_value'] = motor_read_gamelog(arg(1));
     hide($form['field_tip_on_place']);
+    $form['actions']['submit']['#value'] = t('Send');
   }
 }
 
@@ -278,7 +326,7 @@ function motor_block_view($delta = '') {
   $block = array();
   $content = '';
   $content.= views_embed_view('show_place_in_block_','block');
-  $content.= motor_read_gamelimit(5);
+  $content.= motor_read_gamelimit(arg(1))*1000 . ' méteren belül kell tippelned!';
   switch ($delta) {
     case 'game_info_block':
       $block['subject'] = '';

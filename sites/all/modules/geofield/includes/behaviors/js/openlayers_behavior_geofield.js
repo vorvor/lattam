@@ -11,6 +11,8 @@
  * Inherits from:
  *  - <OpenLayers.Control.Panel>
  */
+
+
 OpenLayers.Control.GeofieldEditingToolbar = OpenLayers.Class(
   OpenLayers.Control.Panel, {
 
@@ -28,8 +30,9 @@ OpenLayers.Control.GeofieldEditingToolbar = OpenLayers.Class(
         var controls = [];
         var tool = null;
 
-        if (options.allow_edit && options.allow_edit !== 0) {
+       if (options.allow_edit && options.allow_edit !== 0) {
           // add an Edit feature
+          
           controls.push(new OpenLayers.Control.ModifyFeature(layer, {
             deleteCodes: [46, 68, 100],
             handleKeypress: function(evt) {
@@ -43,18 +46,19 @@ OpenLayers.Control.GeofieldEditingToolbar = OpenLayers.Class(
           }));
         } else {
           controls = [new OpenLayers.Control.Navigation()];
-        }
+        } 
 
         if (options.feature_types && options.feature_types.length) {
           for (var i = 0, il = options.feature_types.length; i < il; i += 1) {
             // capitalize first letter
+            
             tool = options.feature_types[i][0].toUpperCase() + options.feature_types[i].slice(1);
             controls.push(
               new OpenLayers.Control.DrawFeature(layer, OpenLayers.Handler[tool], {'displayClass': 'olControlDrawFeature' + tool})
             );
           }
         }
-
+        
         this.addControls(controls);
     },
 
@@ -65,17 +69,22 @@ OpenLayers.Control.GeofieldEditingToolbar = OpenLayers.Class(
      * Returns:
      * {DOMElement}
      */
+    
     draw: function() {
         OpenLayers.Control.Panel.prototype.draw.apply(this, arguments);
+        //this.div.className += " olControlEditingToolbar";
         this.div.className += " olControlEditingToolbar";
         if (this.defaultControl === null) {
             this.defaultControl = this.controls[0];
+            
         }
+        
         return this.div;
-    },
-
+    }, 
+    
     CLASS_NAME: "OpenLayers.Control.GeofieldEditingToolbar"
 });
+
 
 
 (function($) {

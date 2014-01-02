@@ -315,7 +315,7 @@ class openlayers_proximity_handler_filter extends views_handler_filter_numeric {
    * proximity_index table.
    */
   function process_node_proximity() {
-    //$nid = $this->value['node'];
+    $nid = $this->value['node'];
     $nid = motor_read_gamelog(arg(2));
     dpm($nid);
     

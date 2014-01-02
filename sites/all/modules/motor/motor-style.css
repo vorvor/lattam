@@ -11,6 +11,9 @@ body {
  z-index:500;
  left: 63%;
  top: 18%;
+ width: 260px;
+background: #fff;
+padding: 10px;
 }
 
 .page-add-tip #page .form-actions {

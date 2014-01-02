@@ -61,7 +61,15 @@
         <h1 class="page__title title" id="page-title"><?php print $title; ?></h1>
       <?php endif; ?>
       <?php print render($title_suffix); ?>
-      <?php print $messages; ?>
+      <?php
+        global $user;
+        $plusclass = '';
+      
+        if ($user->uid == 1) {
+          print $messages;
+        }
+      ?>
+      <?php //print $messages; ?>
       <?php print render($tabs); ?>
       <?php print render($page['help']); ?>
       <?php if ($action_links): ?>

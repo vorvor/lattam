@@ -48,6 +48,16 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: "lattam";
+    src:  url('../fonts/lattam.eot');
+    src:  url('../fonts/lattam.eot?#iefix') format('embedded-opentype'),
+          url('../fonts/lattam.woff') format('woff'),
+          url('../fonts/lattam.ttf') format('truetype'),
+          url('../fonts/lattam.svg#font') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
 
 
 
@@ -78,13 +88,16 @@ h1, h2, h3, h4, h5,
   color: #abc837;
 }
 
+#logo, #name-and-slogan {
+    padding:10px;
+}
 
 .page-add-tip {
 
   #page {
     width:100%;
     max-width:100%;
-
+    padding:0;
       #content {
         padding:0;
 
@@ -119,6 +132,12 @@ h1, h2, h3, h4, h5,
     top: 0;
 
     }
+    
+    #edit-submit {
+        background: orange;
+        color:#000;
+        border:2px solid #aa4400;
+    }
 
 }
 
@@ -128,3 +147,110 @@ h1, h2, h3, h4, h5,
     left: 65%;
 }
 
+#site-name a {
+    text-indent: -9999px;
+    background: url(../images/slogan.png) 10px 50% no-repeat;
+    display: block;
+    width: 500px;
+    height: 64px;
+}
+
+#proximity {
+    font-family: miriad;
+    font-size:3em;
+}
+
+.choose-another {
+    font-family:miriad;
+    font-size:2em;
+    clear:both;
+    p {
+        margin:1em 0 0.5em 0;
+    }
+}
+
+.choose-game-row {
+    clear:both;
+    overflow: hidden;
+    margin-bottom:5%;
+    .game-title {
+        font-family: miriad;
+        font-size: 0.8em;
+        line-height: 1em;
+    }
+  .game-pics, .game-choose {
+    float:left;
+  }
+  .game-pics {
+    .views-row {
+      margin:5px;
+    }
+  }
+  .game-choose {
+    background: url(../images/choose-game.png) 0 0 no-repeat;
+    height: 40px;
+    margin: 23px 0 0 5px;
+    a {
+        font-family: miriad;
+        text-decoration: none;
+        color:#000;
+        display: block;
+        height: 40px;
+        text-indent: 40px;
+        font-size: 0.8em;
+        margin-top: 9px;
+    }
+  }
+}
+
+#block-user-login,
+#choose-game-block {
+  float:left;
+}
+
+#block-user-login {
+    margin-left:16%;
+}
+
+
+
+.olLayerGoogleV3.olLayerGooglePoweredBy {
+    display:none;
+}
+
+.try-again {
+    font-family: miriad;
+    font-size:2em;
+    text-decoration: none;
+    color:orange;
+}
+
+#block-views-ad-block {
+    float:left;
+    margin:0 0 0 3em;
+}
+
+#proxy-block {
+    float:left;
+}
+
+.section-validate {
+    background: #d7eef4;
+}
+
+.validate-photo {
+    float:left;
+    margin-right:10px;
+}
+
+.win {
+    background: #aade87;
+}
+
+.hot {
+    background: #ff5599;
+}
+
+.middle {
+    background: #ff9955;
+}
